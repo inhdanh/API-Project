@@ -10,5 +10,14 @@ class API {
             cb(err)
         })
     }
+    static post = (url, data, cb) => {
+        axios.post(`${BASE_URL}${url}`, data)
+        .then(res=>{
+            cb(res)
+        })
+        .catch(err=>{
+            cb(err)
+        })
+    }
 }
 export default API
