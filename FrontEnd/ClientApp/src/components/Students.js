@@ -8,7 +8,7 @@ const Students = () => {
   const [isOpenAddModal, setIsOpenAddModal] = useState(false)
 
   const getStudentList = () => {
-    API.get('api/Student', res => {
+    API.get('api/Students', res => {
       if (res.data)
         setStudents(res.data)
     })
@@ -24,7 +24,7 @@ const Students = () => {
   }
 
   const handleAddStudent = () => {
-    API.post('api/Student', newStudent, (res) => {
+    API.post('api/Students', newStudent, (res) => {
       if (res.data) {
         getStudentList()
         setIsOpenAddModal(false)
