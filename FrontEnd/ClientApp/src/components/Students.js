@@ -1,21 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Col, Form, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader, Table } from 'reactstrap';
-import API from '../api'
+import { selectAllStudents, addStudents } from './studentSlice'
+import { useSelector, useDispatch } from 'react-redux'
+import { unwrapResult } from '@reduxjs/toolkit';
 
 const Students = () => {
-  const [students, setStudents] = useState([])
   const [newStudent, setNewStudent] = useState({})
   const [isOpenAddModal, setIsOpenAddModal] = useState(false)
-
-  const getStudentList = () => {
-    API.get('api/Students', res => {
-      if (res.data)
-        setStudents(res.data)
-    })
-  }
+  const students = useSelector(selectAllStudents)
+  const dispatch = useDispatch()
 
   useEffect(() => {
-    getStudentList()
   }, [])
 
   const handleChange = e => {
@@ -23,13 +18,14 @@ const Students = () => {
     setNewStudent(temp)
   }
 
-  const handleAddStudent = () => {
-    API.post('api/Students', newStudent, (res) => {
-      if (res.data) {
-        getStudentList()
-        setIsOpenAddModal(false)
-      }
-    })
+  const handleAddStudent = async () => {
+    try {
+      const resultAction = await dispatch(addStudents(newStudent))
+      unwrapResult(resultAction)
+      setIsOpenAddModal(false)
+    } catch (err) {
+
+    }
   }
 
   const renderstudentsTable = () => {
