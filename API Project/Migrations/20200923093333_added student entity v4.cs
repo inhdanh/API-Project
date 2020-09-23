@@ -1,8 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace API_Project.Migrations
 {
-    public partial class addedstudententityv3 : Migration
+    public partial class addedstudententityv4 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -10,8 +11,7 @@ namespace API_Project.Migrations
                 name: "Students",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(nullable: false),
                     Age = table.Column<int>(nullable: false),
                     Roll = table.Column<int>(nullable: false),
                     Name = table.Column<string>(nullable: true),

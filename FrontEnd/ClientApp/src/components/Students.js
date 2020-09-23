@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Col, Form, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader, Table } from 'reactstrap';
-import { selectAllStudents, addStudents } from './studentSlice'
+import { Button, Table } from 'reactstrap';
+import { selectAllStudents, selectStudentById, addStudents, editStudents } from './studentSlice'
 import { useSelector, useDispatch } from 'react-redux'
 import { unwrapResult } from '@reduxjs/toolkit';
+import AddStudentModal from './modal/addStudentModal';
+import EditStudentModal from './modal/editStudentModal';
 
 const Students = () => {
-  const [newStudent, setNewStudent] = useState({})
+  const [currentStudent, setCurrentStudent] = useState({})
   const [isOpenAddModal, setIsOpenAddModal] = useState(false)
+  const [isOpenEditModal, setIsOpenEditModal] = useState(false)
+  const [studentId, setStudentId] = useState({})
   const students = useSelector(selectAllStudents)
   const dispatch = useDispatch()
 
@@ -14,17 +18,30 @@ const Students = () => {
   }, [])
 
   const handleChange = e => {
-    const temp = { ...newStudent, [e.target.name]: e.target.value }
-    setNewStudent(temp)
+    const temp = { ...currentStudent, [e.target.name]: e.target.value }
+    setCurrentStudent(temp)
   }
 
   const handleAddStudent = async () => {
     try {
-      const resultAction = await dispatch(addStudents(newStudent))
+      const resultAction = await dispatch(addStudents(currentStudent))
       unwrapResult(resultAction)
       setIsOpenAddModal(false)
-    } catch (err) {
+    } catch (err) { }
+  }
 
+  const handleEditStudent = async (data) => {
+    try {
+      const resultAction = await dispatch(editStudents({ ...data, ...currentStudent }))
+      unwrapResult(resultAction)
+      setIsOpenEditModal(false)
+    } catch (err) { }
+  }
+
+  const handleOpenEditModal = (e) => {
+    if (e.target.id) {
+      setStudentId(e.target.id)
+      setIsOpenEditModal(true)
     }
   }
 
@@ -38,6 +55,7 @@ const Students = () => {
             <th>Name</th>
             <th>Roll</th>
             <th>Section</th>
+            <th>-</th>
           </tr>
         </thead>
         <tbody>
@@ -48,6 +66,7 @@ const Students = () => {
               <td>{student.name}</td>
               <td>{student.roll}</td>
               <td>{student.section}</td>
+              <td><Button id={student.id} color="secondary" onClick={handleOpenEditModal}>Edit</Button></td>
             </tr>
           )}
         </tbody>
@@ -58,47 +77,22 @@ const Students = () => {
     <div>
       <h1 id="tabelLabel" >List student</h1>
       <Button color="primary" onClick={() => setIsOpenAddModal(true)}>Add</Button>
-      <Modal isOpen={isOpenAddModal}>
-        <ModalHeader>Add new student</ModalHeader>
-        <ModalBody>
-          <Form>
-            <FormGroup row>
-              <Label for="age" sm={2}>Age</Label>
-              <Col sm={10}>
-                <Input type="number" name="age" id="age" onChange={handleChange} />
-              </Col>
-            </FormGroup>
-            <FormGroup row>
-              <Label for="class" sm={2}>Class</Label>
-              <Col sm={10}>
-                <Input type="number" name="class" id="class" onChange={handleChange} />
-              </Col>
-            </FormGroup>
-            <FormGroup row>
-              <Label for="name" sm={2}>Name</Label>
-              <Col sm={10}>
-                <Input type="text" name="name" id="name" onChange={handleChange} />
-              </Col>
-            </FormGroup>
-            <FormGroup row>
-              <Label for="roll" sm={2}>Roll</Label>
-              <Col sm={10}>
-                <Input type="number" name="roll" id="roll" onChange={handleChange} />
-              </Col>
-            </FormGroup>
-            <FormGroup row>
-              <Label for="section" sm={2}>Section</Label>
-              <Col sm={10}>
-                <Input type="text" name="section" id="section" onChange={handleChange} />
-              </Col>
-            </FormGroup>
-          </Form>
-        </ModalBody>
-        <ModalFooter>
-          <Button color="primary" onClick={handleAddStudent}>Add</Button>
-          <Button color="secondary" onClick={() => setIsOpenAddModal(false)}>Cancel</Button>
-        </ModalFooter>
-      </Modal>
+      <AddStudentModal
+        handleChange={handleChange}
+        handleAddStudent={handleAddStudent}
+        isOpenAddModal={isOpenAddModal}
+        setIsOpenAddModal={setIsOpenAddModal}
+      />
+      {
+        isOpenEditModal &&
+        <EditStudentModal
+          handleChange={handleChange}
+          isOpenEditModal={isOpenEditModal}
+          setIsOpenEditModal={setIsOpenEditModal}
+          handleEditStudent={handleEditStudent}
+          studentId={studentId}
+        />
+      }
       {renderstudentsTable()}
     </div>
   );

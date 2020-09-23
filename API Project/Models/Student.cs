@@ -1,12 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace API_Project.Models
 {
     public class Student : Entity
     {
+        public Student()
+        {
+            Id = Guid.NewGuid();
+        }
         public int Age { get; set; }
         public int Roll { get; set; }
         public string Name { get; set; }

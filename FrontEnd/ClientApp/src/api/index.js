@@ -7,5 +7,8 @@ class API {
     static post = (url, data) => {
         return axios.post(`${BASE_URL}${url}`, data)
     }
+    static put = (url, data) => {
+        return axios.put(`${BASE_URL}${url}`, data)
+    }
 }
 export default API

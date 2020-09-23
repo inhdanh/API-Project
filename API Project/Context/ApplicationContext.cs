@@ -14,9 +14,5 @@ namespace API_Project.Context
         {
         }
         public DbSet<Student> Students { get; set; }
-        public async Task<int> SaveChanges()
-        {
-            return await base.SaveChangesAsync();
-        }
     }
 }

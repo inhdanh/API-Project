@@ -15,6 +15,10 @@ export const addStudents = createAsyncThunk('students/addStudents', async data =
     const response = await API.post('api/Students', data)
     return response.data
 })
+export const editStudents = createAsyncThunk('students/editStudents', async data => {
+    const response = await API.put(`api/Students/${data.id}`, data)
+    return response.data
+})
 const studentsSlice = createSlice({
     name: 'students',
     initialState,
@@ -33,8 +37,13 @@ const studentsSlice = createSlice({
         },
         [addStudents.fulfilled]: (state, action) => {
             state.students.push(action.payload)
+        },
+        [editStudents.fulfilled]: (state, action) => {
+            const idx = state.students.findIndex(student => student.id == action.payload.id)
+            state.students.splice(idx, 1, action.payload)
         }
     }
 })
 export const selectAllStudents = state => state.students.students
+export const selectStudentById = (state, studentId) => state.students.students.find(student => student.id == studentId)
 export default studentsSlice.reducer

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using API_Project.Context;
@@ -30,7 +29,7 @@ namespace API_Project.Controllers
 
         // GET: api/Students/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Student>> GetStudent(int id)
+        public async Task<ActionResult<Student>> GetStudent(Guid id)
         {
             var student = await _context.Students.FindAsync(id);
 
@@ -46,32 +45,30 @@ namespace API_Project.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutStudent(int id, Student student)
+        public async Task<IActionResult> PutStudent(Guid id, Student student)
         {
-            if (id != student.Id)
+            if(id != student.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(student).State = EntityState.Modified;
+            var existStudent = _context.Students.FirstOrDefault(x => x.Id == id);
 
-            try
+            if(existStudent == null)
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!StudentExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return BadRequest();
             }
 
-            return NoContent();
+            existStudent.Name = student.Name;
+            existStudent.Roll = student.Roll;
+            existStudent.Section = student.Section;
+            existStudent.Class = student.Class;
+            existStudent.Age = student.Age;
+
+            _context.Students.Update(existStudent);
+            _context.SaveChanges();
+
+            return Ok(existStudent);
         }
 
         // POST: api/Students
@@ -80,7 +77,13 @@ namespace API_Project.Controllers
         [HttpPost]
         public async Task<ActionResult<Student>> PostStudent(Student student)
         {
-            _context.Students.Add(student);
+            Student student1 = new Student();
+            student1.Name = student.Name;
+            student1.Roll = student.Roll;
+            student1.Section = student.Section;
+            student1.Class = student.Class;
+            student1.Age = student.Age;
+            _context.Students.Add(student1);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetStudent", new { id = student.Id }, student);
@@ -88,7 +91,7 @@ namespace API_Project.Controllers
 
         // DELETE: api/Students/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Student>> DeleteStudent(int id)
+        public async Task<ActionResult<Student>> DeleteStudent(Guid id)
         {
             var student = await _context.Students.FindAsync(id);
             if (student == null)
@@ -102,7 +105,7 @@ namespace API_Project.Controllers
             return student;
         }
 
-        private bool StudentExists(int id)
+        private bool StudentExists(Guid id)
         {
             return _context.Students.Any(e => e.Id == id);
         }

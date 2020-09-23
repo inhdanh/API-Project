@@ -7,7 +7,5 @@ namespace API_Project.Context
     public interface IApplicationDbContext
     {
         DbSet<Student> Students { get; set; }
-
-        Task<int> SaveChanges();
     }
 }
