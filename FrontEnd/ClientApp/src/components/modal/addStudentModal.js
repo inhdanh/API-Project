@@ -45,7 +45,7 @@ const AddStudentModal = ({
           </Form>
         </ModalBody>
         <ModalFooter>
-          <Button color="primary" onClick={handleAddStudent}>Add</Button>
+          <Button color="primary" onClick={handleAddStudent}>Create</Button>
           <Button color="secondary" onClick={() => setIsOpenAddModal(false)}>Cancel</Button>
         </ModalFooter>
       </Modal>

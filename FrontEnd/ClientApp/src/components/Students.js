@@ -1,38 +1,37 @@
-import React, { useEffect, useState } from 'react';
-import { Button, Table } from 'reactstrap';
-import { selectAllStudents, selectStudentById, addStudents, editStudents } from './studentSlice'
+import React, { useEffect, useState } from 'react'
+import { Alert, Button, Table } from 'reactstrap'
+import { selectAllStudents, addStudents, editStudents, deleteStudent, closeSuccessAlert, selectSuccessAlert } from './studentSlice'
 import { useSelector, useDispatch } from 'react-redux'
-import { unwrapResult } from '@reduxjs/toolkit';
-import AddStudentModal from './modal/addStudentModal';
-import EditStudentModal from './modal/editStudentModal';
+import { unwrapResult } from '@reduxjs/toolkit'
+import AddStudentModal from './modal/addStudentModal'
+import EditStudentModal from './modal/editStudentModal'
+import { Toast } from 'react-bootstrap'
 
 const Students = () => {
-  const [currentStudent, setCurrentStudent] = useState({})
+  const [values, setCurrentValues] = useState({})
   const [isOpenAddModal, setIsOpenAddModal] = useState(false)
   const [isOpenEditModal, setIsOpenEditModal] = useState(false)
   const [studentId, setStudentId] = useState({})
   const students = useSelector(selectAllStudents)
   const dispatch = useDispatch()
-
-  useEffect(() => {
-  }, [])
+  const isOpen = useSelector(selectSuccessAlert)
 
   const handleChange = e => {
-    const temp = { ...currentStudent, [e.target.name]: e.target.value }
-    setCurrentStudent(temp)
+    const temp = { ...values, [e.target.name]: e.target.value }
+    setCurrentValues(temp)
   }
 
-  const handleAddStudent = async () => {
+  const handleAddStudent = () => {
     try {
-      const resultAction = await dispatch(addStudents(currentStudent))
+      const resultAction = dispatch(addStudents(values))
       unwrapResult(resultAction)
       setIsOpenAddModal(false)
     } catch (err) { }
   }
 
-  const handleEditStudent = async (data) => {
+  const handleEditStudent = (data) => {
     try {
-      const resultAction = await dispatch(editStudents({ ...data, ...currentStudent }))
+      const resultAction = dispatch(editStudents({ ...data, ...values }))
       unwrapResult(resultAction)
       setIsOpenEditModal(false)
     } catch (err) { }
@@ -43,6 +42,15 @@ const Students = () => {
       setStudentId(e.target.id)
       setIsOpenEditModal(true)
     }
+  }
+
+  const handleOpenAddModal = e => {
+    setCurrentValues({})
+    setIsOpenAddModal(true)
+  }
+
+  const handleDelete = e => {
+    dispatch(deleteStudent(e.target.id))
   }
 
   const renderstudentsTable = () => {
@@ -56,6 +64,7 @@ const Students = () => {
             <th>Roll</th>
             <th>Section</th>
             <th>-</th>
+            <th>-</th>
           </tr>
         </thead>
         <tbody>
@@ -67,16 +76,20 @@ const Students = () => {
               <td>{student.roll}</td>
               <td>{student.section}</td>
               <td><Button id={student.id} color="secondary" onClick={handleOpenEditModal}>Edit</Button></td>
+              <td><Button id={student.id} color="danger" onClick={handleDelete}>Delete</Button></td>
             </tr>
           )}
         </tbody>
       </Table>
-    );
+    )
   }
   return (
     <div>
+      <Toast onClose={(state) => dispatch(closeSuccessAlert(state))} show={isOpen} delay={3000} autohide>
+        <Toast.Body>Success!!</Toast.Body>
+      </Toast>
       <h1 id="tabelLabel" >List student</h1>
-      <Button color="primary" onClick={() => setIsOpenAddModal(true)}>Add</Button>
+      <Button color="primary" onClick={handleOpenAddModal}>Add</Button>
       <AddStudentModal
         handleChange={handleChange}
         handleAddStudent={handleAddStudent}
@@ -95,6 +108,6 @@ const Students = () => {
       }
       {renderstudentsTable()}
     </div>
-  );
+  )
 }
 export default Students

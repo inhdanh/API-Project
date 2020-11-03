@@ -77,13 +77,7 @@ namespace API_Project.Controllers
         [HttpPost]
         public async Task<ActionResult<Student>> PostStudent(Student student)
         {
-            Student student1 = new Student();
-            student1.Name = student.Name;
-            student1.Roll = student.Roll;
-            student1.Section = student.Section;
-            student1.Class = student.Class;
-            student1.Age = student.Age;
-            _context.Students.Add(student1);
+            _context.Students.Add(student);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetStudent", new { id = student.Id }, student);

@@ -10,5 +10,8 @@ class API {
     static put = (url, data) => {
         return axios.put(`${BASE_URL}${url}`, data)
     }
+    static delete = (url) => {
+        return axios.delete(`${BASE_URL + url}`)
+    }
 }
 export default API

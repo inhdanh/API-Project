@@ -20,13 +20,13 @@ const EditStudentModal = ({
           <FormGroup row>
             <Label for="age" sm={2}>Age</Label>
             <Col sm={10}>
-              <Input type="number" name="age" id="age" onChange={handleChange} defaultValue={studentDetail.age} />
+              <Input type="text" name="age" id="age" onChange={handleChange} defaultValue={studentDetail.age} />
             </Col>
           </FormGroup>
           <FormGroup row>
             <Label for="class" sm={2}>Class</Label>
             <Col sm={10}>
-              <Input type="number" name="class" id="class" onChange={handleChange} defaultValue={studentDetail.class} />
+              <Input type="text" name="class" id="class" onChange={handleChange} defaultValue={studentDetail.class} />
             </Col>
           </FormGroup>
           <FormGroup row>
@@ -38,7 +38,7 @@ const EditStudentModal = ({
           <FormGroup row>
             <Label for="roll" sm={2}>Roll</Label>
             <Col sm={10}>
-              <Input type="number" name="roll" id="roll" onChange={handleChange} defaultValue={studentDetail.roll} />
+              <Input type="text" name="roll" id="roll" onChange={handleChange} defaultValue={studentDetail.roll} />
             </Col>
           </FormGroup>
           <FormGroup row>
@@ -50,7 +50,7 @@ const EditStudentModal = ({
         </Form>
       </ModalBody>
       <ModalFooter>
-        <Button color="primary" onClick={() => handleEditStudent(studentDetail)}>Edit</Button>
+        <Button color="primary" onClick={() => handleEditStudent(studentDetail)}>Save</Button>
         <Button color="secondary" onClick={() => setIsOpenEditModal(false)}>Cancel</Button>
       </ModalFooter>
     </Modal>
